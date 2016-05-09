@@ -27,9 +27,6 @@ defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
 
-    //--- general settings -----------------------------------------------------------------------------------
-    $settings->add(new admin_setting_configcheckbox('groupselect/requiremodintro',
-        get_string('requiremodintro', 'admin'), get_string('requiremodintro_desc', 'admin'), 1));
 
     //--- modedit defaults -----------------------------------------------------------------------------------
     $settings->add(new admin_setting_heading('groupselectmodeditdefaults', get_string('modeditdefaults', 'admin'), get_string('condifmodeditdefaults', 'admin')));
