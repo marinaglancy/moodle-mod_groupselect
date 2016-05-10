@@ -231,6 +231,7 @@ if ($select and $canselect and isset ( $groups [$select] ) and $isopen) {
 	} else if ($return = $mform->get_data ()) {
 		groups_add_member ( $select, $USER->id );
 		//add_to_log ( $course->id, 'groupselect', 'select', 'view.php?id=' . $cm->id, $groupselect->id, $cm->id );
+
 		redirect ( $PAGE->url );
 	} else {
 		echo $OUTPUT->header ();
@@ -249,13 +250,14 @@ if ($select and $canselect and isset ( $groups [$select] ) and $isopen) {
 		$problems [] = get_string ( 'cannotunselectclosed', 'mod_groupselect' );
 	} else if ($confirm and data_submitted () and confirm_sesskey ()) {
 		groups_remove_member ( $unselect, $USER->id );
-		if ($groupselect->deleteemptygroups and ! groups_get_members ( $unselect, $USER->id )) {
+		if ($groupselect->deleteemptygroups and ! groups_get_members ( $unselect )) {
 			groups_delete_group ( $unselect );
 			$DB->delete_records ( 'groupselect_passwords', array (
 					'groupid' => $unselect 
 			) );
 		}
 		//add_to_log ( $course->id, 'groupselect', 'unselect', 'view.php?id=' . $cm->id, $groupselect->id, $cm->id );
+
 		redirect ( $PAGE->url );
 	} else {
 		$grpname = format_string ( $mygroups [$unselect]->name, true, array (
@@ -533,14 +535,8 @@ if ($canexport) {
 }
 
 // Assign button
-if ($canassign and count($groups) > 0 )  {
-    $action = new confirm_action(get_string('assigngroup_confirm', 'mod_groupselect'), 'openpopup');
-    $action->jsfunctionargs['callbackargs'] = array(
-        null,
-        array('url'=> new moodle_url ( '/mod/groupselect/view.php', array (
-			'id' => $cm->id,
-			'assign' => true )
-    )));
+if ($canassign and count($groups) > 0 )  {		
+	$action = new confirm_action(get_string('assigngroup_confirm', 'mod_groupselect'));
     $button = new single_button(new moodle_url ( '/mod/groupselect/view.php', array (
 			'id' => $cm->id,
                         'assign' => true
@@ -655,7 +651,7 @@ if (empty ( $groups )) {
 						$membernames [] = $pic . '&nbsp;<a href="' . $CFG->wwwroot . '/user/view.php?id=' . $member->id . '&amp;course=' . $course->id . '">' . fullname ( $member, $viewfullnames ) . '</a>';
 					}
 				}
-                                // Show assigned teacher, if exists, when enabled or when user is non-assigned teacher
+                // Show assigned teacher, if exists, when enabled or when user is non-assigned teacher
 				if($groupselect->showassignedteacher or user_has_role_assignment($USER->id, $ASSIGNROLE, context_course::instance ( $course->id )->id)) {
                                 $teacherid = null;
 				foreach ( $assigned_relation as $r ) {
