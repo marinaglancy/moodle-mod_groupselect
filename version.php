@@ -31,5 +31,5 @@ $plugin->requires  = 2015051100; // Requires this Moodle version
 $plugin->cron      = 0;          // Period for cron to check this module (secs)
 $plugin->component = 'mod_groupselect'; // Full name of the plugin (used for diagnostics)
 
-$plugin->maturity  = MATURITY_BETA;
-$plugin->release   = "3.06 (beta)"; // User-friendly version number
+$plugin->maturity  = MATURITY_STABLE;
+$plugin->release   = "3.06"; // User-friendly version number
