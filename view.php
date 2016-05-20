@@ -560,7 +560,7 @@ if (empty ( $groups )) {
 	$assigned_relation = $DB->get_records_sql ( "SELECT g.id AS rid, g.teacherid AS id, g.groupid
     											FROM  {groupselect_groups_teachers} g
     									     	WHERE g.instance_id = ?", array (
-                                                                                    'instance_id' => $id 
+                                                                                    'instance_id' => $groupselect->id 
 	) );
 	$assigned_teacher_ids = array ();
 	foreach ( $assigned_relation as $r ) {
