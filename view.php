@@ -445,11 +445,11 @@ if ($export and $canexport) {
 if ($assign and $canassign) {
 
 	$already_assigned = count ( $DB->get_records ( 'groupselect_groups_teachers', array (
-			'instance_id' => $id 
+			'instance_id' => $groupselect->id 
 	) ) ) > 0 ? true : false;
 	if ($already_assigned) {
 		$DB->delete_records ( 'groupselect_groups_teachers', array (
-				'instance_id' => $id 
+				'instance_id' => $groupselect->id 
 		) );
 	}
 	
@@ -470,7 +470,7 @@ if ($assign and $canassign) {
 			array_push ( $group_teacher_relations, ( object ) array (
 					'groupid' => $group,
 					'teacherid' => $teacher->userid,
-					'instance_id' => $id 
+					'instance_id' => $groupselect->id
 			) );
 			$i ++;
 		}
