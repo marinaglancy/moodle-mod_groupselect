@@ -37,18 +37,38 @@ class backup_groupselect_activity_structure_step extends backup_activity_structu
 
         // Define each element separated
         $groupselect = new backup_nested_element('groupselect', array('id'), array(
-            'name', 'intro', 'introformat', 'targetgrouping', 'contentformat',
-            'password', 'maxmembers', 'timeavailable', 'timedue',
-            'timecreated', 'timemodified'));
+            'name', 'intro', 'introformat', 'targetgrouping', 'maxmembers', 'timeavailable', 'timedue',
+            'timecreated', 'timemodified', 'hidefullgroups', 'deleteemptygroups',
+        	'studentcancreate', 'minmembers', 'assignteachers', 'studentcansetdesc',
+        	'showassignedteacher'
+        ));
+        
+        $passwords = new backup_nested_element('passwords');
+        
+        $password = new backup_nested_element('password', array('id'), array(
+        		'groupid','password', 'instance_id'));
+        
+        $groupteachers = new backup_nested_element('groupteachers');
+        
+        $groupteacher = new backup_nested_element('groupteacher', array('id'), array(
+        		'groupid','teacherid', 'instance_id'));
 
-        // Build the tree
-        // (love this)
-
+        // Build the tree        
+        $groupselect->add_child($passwords);
+        $passwords->add_child($password);
+        $groupselect->add_child($groupteachers);
+        $groupteachers->add_child($groupteacher);        	
+        
         // Define sources
         $groupselect->set_source_table('groupselect', array('id' => backup::VAR_ACTIVITYID));
-
+        $password->set_source_table('groupselect_groups_teachers',array('instance_id' => backup::VAR_ACTIVITYID));
+        $groupteacher->set_source_table('groupselect_passwords',array('instance_id' => backup::VAR_ACTIVITYID));
+        
         // Define id annotations
-        // (none)
+        $groupselect->annotage_ids('grouping','targetgrouping');
+		$password->annotage_ids('group','groupid');
+		$groupteacher->annotage_ids('group','groupid');
+		$groupteacher->annotage_ids('user','teacherid');		
 
         // Define file annotations
         $groupselect->annotate_files('mod_groupselect', 'intro', null); // This file areas haven't itemid
