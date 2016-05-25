@@ -281,7 +281,7 @@ if ($select and $canselect and isset ( $groups [$select] ) and $isopen) {
 // Group user data export
 if ($export and $canexport) {
 	// TODO: export only from target grouping
-        // 
+	// 
 	// Fetch groups & assigned teachers
 	$sql = "SELECT g.id AS groupid, g.name, g.description, u.username, u.firstname, u.lastname, u.email
 			  FROM {groups} g
@@ -339,13 +339,13 @@ if ($export and $canexport) {
 	 }
 	
 	// Format data to csv
-        $QUOTE = '"';
-        $CHARS_TO_ESCAPE = array(
-                                $QUOTE => $QUOTE.$QUOTE
-                );
+	$QUOTE = '"';
+	$CHARS_TO_ESCAPE = array(
+						$QUOTE => $QUOTE.$QUOTE
+                		);
 	$assigned_teacher = 'Assigned teacher ';
-        $group_member = 'Member ';
-         $header = array(
+	$group_member = 'Member ';
+	$header = array(
 //			get_string ( 'groupid', 'mod_groupselect' ),
 //			get_string ( 'groupname', 'group' ),
 //			get_string ( 'groupdescription', 'group' ),
@@ -358,10 +358,10 @@ if ($export and $canexport) {
         'Group Name',
         'Group Size',
         'Group Description',
-        $assigned_teacher . 'Username',
-        $assigned_teacher . 'Firstname',
-        $assigned_teacher . 'Lastname',
-        $assigned_teacher . 'Email',
+	$assigned_teacher . 'Username',
+	$assigned_teacher . 'Firstname',
+	$assigned_teacher . 'Lastname',
+	$assigned_teacher . 'Email',
             )
     ;
     for($i=0; $i < $max_group_size; $i++) {
@@ -371,11 +371,11 @@ if ($export and $canexport) {
 //		$header[] = get_string('member', 'mod_groupselect').' '.strval($i+1).' '. get_string ( 'lastname' );
 //		$header[] = get_string('member', 'mod_groupselect').' '.strval($i+1).' '. get_string ( 'email' );
             
-            $header[] = $group_member.strval($i+1).' '.'Username';
-            $header[] = $group_member.strval($i+1).' '.'ID Number';
-            $header[] = $group_member.strval($i+1).' '.'Firstname';
-            $header[] = $group_member.strval($i+1).' '.'Lastname';
-            $header[] = $group_member.strval($i+1).' '.'Email';
+		$header[] = $group_member.strval($i+1).' '.'Username';
+		$header[] = $group_member.strval($i+1).' '.'ID Number';
+		$header[] = $group_member.strval($i+1).' '.'Firstname';
+		$header[] = $group_member.strval($i+1).' '.'Lastname';
+		$header[] = $group_member.strval($i+1).' '.'Email';
 	}
 	$content = implode ( (','), $header ) . "\n";
         
@@ -394,23 +394,23 @@ if ($export and $canexport) {
 				$QUOTE.strtr($r->email, $CHARS_TO_ESCAPE).$QUOTE               
 				
 		);
-                $groupsize = 0;
+		$groupsize = 0;
 		for($i=1; $i < $max_group_size +1; $i++) {
 			if(isset($r->$i)) {
-                                // First element contains group-member relation id which is not needed, so skip it
-                                $first = true;
+				// First element contains group-member relation id which is not needed, so skip it
+				$first = true;
 				foreach ($r->$i as $member_field) {
-                                   if($first) {
-                                      $first = false;
-                                      continue;
-                                   }
-                                   $row[] = $QUOTE.strtr($member_field, $CHARS_TO_ESCAPE).$QUOTE;
+					if($first) {
+						$first = false;
+						continue;
+					}
+					$row[] = $QUOTE.strtr($member_field, $CHARS_TO_ESCAPE).$QUOTE;
 				}
 				array_pop($row);
-                                $groupsize++;
+				$groupsize++;
 			}
 		}
-                array_splice($row, 2, 0, $QUOTE.strval($groupsize).$QUOTE);
+		array_splice($row, 2, 0, $QUOTE.strval($groupsize).$QUOTE);
 		$content = $content . implode ( (','), $row ) . "\n";
 	}
 	
@@ -439,6 +439,12 @@ if ($export and $canexport) {
 	$file = $fs->create_file_from_string ( $fileinfo, $content );
 	// Store file url to show later
 	$exporturl = moodle_url::make_pluginfile_url ( $file->get_contextid (), $file->get_component (), $file->get_filearea (), $file->get_itemid (), $file->get_filepath (), $file->get_filename () );
+	
+	// event logging
+	$event = \mod_groupselect\event\export_link_created::create(array(
+			'context' => $context,
+	));
+	$event->trigger();
 }
 
 // User wants to assign (non-editing) teachers
@@ -455,28 +461,43 @@ if ($assign and $canassign) {
 	
 	$course_context = context_course::instance ( $course->id )->id;
 	$teachers = groupselect_get_context_members_by_role ( $course_context, $ASSIGNROLE );
-        shuffle( $teachers );
+	shuffle( $teachers );
 	
-	$group_teacher_relations = array ();
 	$agroups = $groups;
-        $teacher_count = count($teachers);
+	$teacher_count = count($teachers);
 
 	foreach ( $teachers as $teacher ) {
 		$i = 0;
 		$iterations = ceil ( count( $agroups ) / $teacher_count );
 		while ( $i < $iterations ) {
 			$group = array_rand ( $agroups );
+			
 			unset ( $agroups [$group] );
-			array_push ( $group_teacher_relations, ( object ) array (
+			$new_group_teacher_relation = ( object ) array (
 					'groupid' => $group,
 					'teacherid' => $teacher->userid,
 					'instance_id' => $groupselect->id
-			) );
+			); 
+			
+			$gsgteacherid = $DB->insert_record ( 'groupselect_groups_teachers', $new_group_teacher_relation );
+			$new_group_teacher_relation->id = $gsgteacherid;
+			
+			// event logging 
+			$event = \mod_groupselect\event\group_teacher_added::create(array(
+					'context' => $context,
+					'objectid' => $gsgteacherid,
+					'relateduserid' => $teacher->userid,
+					'other' => array(
+                    'groupid' => $group)					
+					));
+			$event->add_record_snapshot('groupselect', $groupselect);
+			$event->add_record_snapshot('groupselect_groups_teachers;', $new_group_teacher_relation);
+			$event->trigger();
+			
 			$i ++;
 		}
-                $teacher_count --;
+    $teacher_count --;
 	}
-	$DB->insert_records ( 'groupselect_groups_teachers', $group_teacher_relations );
 
 }
 
@@ -529,8 +550,7 @@ if ($canexport) {
     else{
         echo '<div class="export_url" >';
         echo $OUTPUT->action_link ( $exporturl, get_string ( 'export_download', 'mod_groupselect' ) );
-	echo '</div> <br>';
-        
+	echo '</div> <br>';        
     }
 }
 
