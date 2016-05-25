@@ -255,6 +255,9 @@ if ($select and $canselect and isset ( $groups [$select] ) and $isopen) {
 			$DB->delete_records ( 'groupselect_passwords', array (
 					'groupid' => $unselect 
 			) );
+			$DB->delete_records ( 'groupselect_groups_teachers', array (
+					'groupid' => $unselect
+			) );
 		}
 		//add_to_log ( $course->id, 'groupselect', 'unselect', 'view.php?id=' . $cm->id, $groupselect->id, $cm->id );
 
@@ -283,7 +286,7 @@ if ($export and $canexport) {
 	// TODO: export only from target grouping
 	// 
 	// Fetch groups & assigned teachers
-	$sql = "SELECT g.id AS groupid, g.name, g.description, u.username, u.firstname, u.lastname, u.email
+	$sql = "SELECT gt.id, g.id AS groupid, g.name, g.description, u.username, u.firstname, u.lastname, u.email
 			  FROM {groups} g
 		 LEFT JOIN {groupselect_groups_teachers} gt
 			    ON g.id = gt.groupid
@@ -491,7 +494,7 @@ if ($assign and $canassign) {
                     'groupid' => $group)					
 					));
 			$event->add_record_snapshot('groupselect', $groupselect);
-			$event->add_record_snapshot('groupselect_groups_teachers;', $new_group_teacher_relation);
+			$event->add_record_snapshot('groupselect_groups_teachers', $new_group_teacher_relation);
 			$event->trigger();
 			
 			$i ++;
