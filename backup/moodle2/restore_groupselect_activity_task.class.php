@@ -65,8 +65,8 @@ class restore_groupselect_activity_task extends restore_activity_task {
     static public function define_decode_rules() {
         $rules = array();
 
-        $rules[] = new restore_decode_rule('groupselectVIEWBYID', '/mod/groupselect/view.php?id=$1', 'course_module');
-        $rules[] = new restore_decode_rule('groupselectINDEX', '/mod/groupselect/index.php?id=$1', 'course');
+        $rules[] = new restore_decode_rule('GROUPSELECTVIEWBYID', '/mod/groupselect/view.php?id=$1', 'course_module');
+        $rules[] = new restore_decode_rule('GROUPSELECTINDEX', '/mod/groupselect/index.php?id=$1', 'course');
 
         return $rules;
 
