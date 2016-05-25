@@ -65,3 +65,5 @@ $string['select'] = 'Become member of {$a}';
 $string['targetgrouping'] = 'Select groups from grouping';
 $string['timeavailable'] = 'Open from';
 $string['timedue'] = 'Open until';
+$string['eventgroupteacheradded'] = 'Non-editing teacher added';
+$string['eventexportlinkcreated'] = 'Export link created';
