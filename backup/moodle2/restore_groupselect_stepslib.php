@@ -57,6 +57,9 @@ class restore_groupselect_activity_structure_step extends restore_activity_struc
 
         // insert the groupselect record
         $newitemid = $DB->insert_record('groupselect', $data);
+        
+        $this->set_mapping('groupselect', $oldid, $newitemid, true);
+        
         // immediately after inserting "activity" record, call this
         $this->apply_activity_instance($newitemid);
     }
@@ -73,6 +76,8 @@ class restore_groupselect_activity_structure_step extends restore_activity_struc
     
     	// insert the groupselect record
     	$newitemid = $DB->insert_record('groupselect_groups_teachers', $data);
+    	
+    	$this->set_mapping('groupselect_groups_teacher', $oldid, $newitemid, true);
 
     }
     
@@ -87,6 +92,8 @@ class restore_groupselect_activity_structure_step extends restore_activity_struc
     
     	// insert the groupselect record
     	$newitemid = $DB->insert_record('groupselect_passwords', $data);
+    	
+    	$this->set_mapping('groupselect_password', $oldid, $newitemid, true);
 
     }
 
