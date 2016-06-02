@@ -164,7 +164,7 @@ function xmldb_groupselect_upgrade($oldversion) {
     	upgrade_mod_savepoint(true, 2015032500, 'groupselect');
 	}
 	
-	if ($oldversion < 2016052502){		
+	if ($oldversion < 2016060200){		
 
     	// update wrong instace_ids
     	$table = new xmldb_table('groupselect_groups_teachers');
@@ -183,7 +183,7 @@ function xmldb_groupselect_upgrade($oldversion) {
     	}
     	
     	// search savepoint reached
-    	upgrade_mod_savepoint(true, 2016052502, 'groupselect');
+    	upgrade_mod_savepoint(true, 2016060200, 'groupselect');
 	}
 	return true;
 }
