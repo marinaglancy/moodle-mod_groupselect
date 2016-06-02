@@ -33,7 +33,7 @@ Project page:
 * https://github.com/skodak/moodle-mod_groupselect (original <= 2.1 versions) by Petr Skoda
 
 NOTABLE UPDATES:
-* 2016.06.02: fixed wrong instance_id in table groupselect_groups_teachers, backup and restore,
+* 2016.06.02: fixed wrong instance_id in table groupselect_groups_teachers, backup and restore works now,
 added new logging events for adding non-editign teachers and creating a downloadlink, some small fixes
 * 2016.05.09: Removed general setting 'requiremodintro', not supported anymore
 * 2015.03.25: Fixed: password was asked when joining group without
