@@ -86,10 +86,20 @@ class mod_groupselect_mod_form extends moodleform_mod {
         $mform->addHelpButton('studentcancreate', 'studentcancreate', 'mod_groupselect');
         $mform->setDefault('studentcancreate', true);
         
+        $mform->addElement('advcheckbox', 'studentcansetgroupname', get_string('studentcansetgroupname', 'mod_groupselect'), '',
+        		array('optional'=>true, 'group'=>null), array(0,1));
+        $mform->addHelpButton('studentcansetgroupname', 'studentcansetgroupname', 'mod_groupselect');
+        $mform->setDefault('studentcansetgroupname', true);
+        
         $mform->addElement('advcheckbox', 'studentcansetdesc', get_string('studentcansetdesc', 'mod_groupselect'), '',
         		array('optional'=>true, 'group'=>null), array(0,1));
         $mform->addHelpButton('studentcansetdesc', 'studentcansetdesc', 'mod_groupselect');
         $mform->setDefault('studentcansetdesc', true);
+        
+        $mform->addElement('advcheckbox', 'studentcansetenrolmentkey', get_string('studentcansetenrolmentkey', 'mod_groupselect'), '',
+        		array('optional'=>true, 'group'=>null), array(0,1));
+        $mform->addHelpButton('studentcansetenrolmentkey', 'studentcansetenrolmentkey', 'mod_groupselect');
+        $mform->setDefault('studentcansetenrolmentkey', false);
 
         $mform->addElement('advcheckbox', 'assignteachers', get_string('assigngroup', 'mod_groupselect'), '',
         		array('optional'=>true, 'group'=>null), array(0,1));
@@ -110,6 +120,8 @@ class mod_groupselect_mod_form extends moodleform_mod {
         		array('optional'=>true, 'group'=>null), array(0,1));
         $mform->addHelpButton('deleteemptygroups', 'deleteemptygroups', 'mod_groupselect');
         $mform->setDefault('deleteemptygroups', true);
+        
+
         
         
          

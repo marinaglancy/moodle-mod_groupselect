@@ -185,5 +185,21 @@ function xmldb_groupselect_upgrade($oldversion) {
     	// search savepoint reached
     	upgrade_mod_savepoint(true, 2016060200, 'groupselect');
 	}
+	if ($oldversion < 2016060903){
+	
+		// Update module settings table
+		$table = new xmldb_table('groupselect');		
+		$fields[] = new xmldb_field('studentcansetenrolmentkey', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'showassignedteacher');
+		$fields[] = new xmldb_field('studentcansetgroupname', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '1', 'studentcansetenrolmentkey');
+			
+		foreach($fields as $field) {
+			if (!$dbman->field_exists($table, $field)) {
+				$dbman->add_field($table, $field);
+			}
+		}
+		
+		// search savepoint reached
+		upgrade_mod_savepoint(true, 2016060603, 'groupselect');
+	}
 	return true;
 }

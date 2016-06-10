@@ -31,6 +31,7 @@ class create_form extends moodleform {
     
     const DESCRIPTION_MAXLEN = 1024;
     const PASSWORD_MAXLEN = 254;
+    const GROUP_NAME_MAXLEN = 254;
     
 	function definition() {	    
 	    
@@ -39,35 +40,58 @@ class create_form extends moodleform {
         
 		$mform->addElement('hidden','id');
 		$mform->setType('id', PARAM_INT);
+			
+		if($this->groupselect->studentcansetgroupname){
+			$mform->addElement('text','groupname', get_string('groupname', 'group'), array('size'=>'100', 'maxlength'=>self::GROUP_NAME_MAXLEN-1));
+		}
+		else{
+			$mform->addElement('hidden', 'groupname', '');
+		}
+		$mform->setType('groupname', PARAM_TEXT);
 		
-                if($this->groupselect->studentcansetdesc) {
-		$mform->addElement('textarea', 'description', get_string('description', 'mod_groupselect'), array('wrap'=>'virtual', 'maxlength'=>self::DESCRIPTION_MAXLEN-1, 'rows'=>'3', 'cols'=>'25', ''));
-                }
-                else {
-                    $mform->addElement('hidden', 'description', '');
-                }
-                $mform->setType('description', PARAM_NOTAGS);
-                
-                
-		$mform->addElement('passwordunmask', 'password', get_string('password'), array('maxlength'=>self::PASSWORD_MAXLEN-1, 'size'=>"24"));
+		
+		if($this->groupselect->studentcansetdesc) {
+			$mform->addElement('textarea', 'description', get_string('description', 'mod_groupselect'), array('wrap'=>'virtual', 'maxlength'=>self::DESCRIPTION_MAXLEN-1, 'rows'=>'3', 'cols'=>'25', ''));
+		}
+		else {
+			$mform->addElement('hidden', 'description', '');
+		}
+		$mform->setType('description', PARAM_NOTAGS);
+
+		if($this->groupselect->studentcansetenrolmentkey){
+			$mform->addElement('passwordunmask', 'password', get_string('password'), array('maxlength'=>self::PASSWORD_MAXLEN-1, 'size'=>"24"));
+		}
+		else{
+			$mform->addElement('hidden', 'password', '');
+		}
 		$mform->setType('password', PARAM_RAW);
-		
+
 		$this->add_action_buttons(true, get_string('creategroup', 'mod_groupselect'));
 		$this->set_data($data);
+		
+		
 	}
 
 	function validation($data, $files) {
- 		$errors = parent::validation($data, $files);
-        
- 		$description = $data['description'];
-  		if(strlen($description) > self::DESCRIPTION_MAXLEN) {
- 		    $errors['description'] = get_string('maxcharlenreached', 'mod_groupselect');
- 		}
-        $password = $data['password'];
-        if(strlen($password) > self::PASSWORD_MAXLEN) {
-            $errors['password'] = get_string('maxcharlenreached', 'mod_groupselect');
-        }
+		global $COURSE;
+		
+		$errors = parent::validation($data, $files);
 
+		$description = $data['description'];
+		if(strlen($description) > self::DESCRIPTION_MAXLEN) {
+			$errors['description'] = get_string('maxcharlenreached', 'mod_groupselect');
+ 		}
+		$password = $data['password'];
+		if(strlen($password) > self::PASSWORD_MAXLEN) {
+			$errors['password'] = get_string('maxcharlenreached', 'mod_groupselect');
+		}
+		$groupname = $data['groupname'];
+		if(strlen($groupname) > self::GROUP_NAME_MAXLEN) {
+			$errors['groupname'] = get_string('maxcharlenreached', 'mod_groupselect');
+		}
+		if (groups_get_group_by_name($COURSE->id, $groupname)) {
+			$errors['groupname'] = get_string('groupnameexists', 'group', $groupname);
+		}
 		return $errors;
 	}
 }

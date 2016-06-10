@@ -1,6 +1,7 @@
 <?php
 
 $string['action'] = 'Action';
+
 $string['assigngroup'] = 'Assign non-editing teachers to groups';
 $string['assigngroup_confirm'] = 'This will assign non-editing teachers to groups, overriding possible previous assignment irreversibly. Are you sure?';
 $string['assigngroup_help'] = 'If set, enables a button which assigns non-editing teachers to groups (if course has non-editing teachers). Assigned non-editing teachers are not group members, but they show up in export file and in the main view (if set). Useful if course uses assistants to handle groups.';
@@ -15,6 +16,8 @@ $string['deleteemptygroups'] = 'Delete group when last student leaves';
 $string['deleteemptygroups_help'] = 'If set, automatically deletes group when last student leaves from it';
 $string['description'] = 'Group description';
 $string['edittooltip'] = 'Click to edit';
+$string['eventgroupteacheradded'] = 'Non-editing teacher added';
+$string['eventexportlinkcreated'] = 'Export link created';
 $string['export'] = 'Create a download link for group data file (CSV)';
 $string['export_download'] = 'Download CSV-file';
 $string['fromallgroups'] = 'All groups';
@@ -59,11 +62,14 @@ $string['studentcancreate'] = 'Students can create groups';
 $string['studentcancreate_help'] = 'If set, students without group (in selected grouping) can create groups';
 $string['studentcansetdesc'] = 'Students can set and edit group description';
 $string['studentcansetdesc_help'] = 'If set, student can set a a group description when creating one and group members can edit it';
+$string['studentcansetenrolmentkey'] = 'Students can set passwords for joining groups';
+$string['studentcansetenrolmentkey_help'] = 'If set, students can set an enrolment key for joining groups';
+$string['studentcansetgroupname'] = 'Students can set the name of new groups';
+$string['studentcansetgroupname_help'] = 'If set, students can set the group names';
 $string['unselectconfirm'] = 'Do you really want to leave the group <em>{$a}</em>?';
 $string['unselect'] = 'Leave group {$a}';
 $string['select'] = 'Become member of {$a}';
 $string['targetgrouping'] = 'Select groups from grouping';
 $string['timeavailable'] = 'Open from';
 $string['timedue'] = 'Open until';
-$string['eventgroupteacheradded'] = 'Non-editing teacher added';
-$string['eventexportlinkcreated'] = 'Export link created';
+

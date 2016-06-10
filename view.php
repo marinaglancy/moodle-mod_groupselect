@@ -98,6 +98,7 @@ $cancreate = ($groupselect->studentcancreate and has_capability ( 'mod/groupsele
 $canexport = (has_capability ( 'mod/groupselect:export', $context ) and count ( $groups ) > 0);
 $canassign = (has_capability ( 'mod/groupselect:assign', $context ) and $groupselect->assignteachers and (count(groupselect_get_context_members_by_role ( context_course::instance ( $course->id )->id, $ASSIGNROLE )) > 0));
 $canedit = ($groupselect->studentcansetdesc and $isopen); 
+$cansetgroupname = ($groupselect->studentcansetgroupname);
 
 if ($course->id == SITEID) {
 	$viewothers = has_capability ( 'moodle/site:viewparticipants', $context );
@@ -155,24 +156,32 @@ if ($cancreate and $isopen) {
 	}
 	if ($formdata = $mform->get_data ()) {
 		// Create a new group and add the creator as a member of it
-                $params = array (
-				$course->id 
+		$params = array (
+			$course->id 
 		);
-		$names = $DB->get_records_sql ( "SELECT g.name
-                   FROM {groups} g
-                  WHERE g.courseid = ?", $params );
-		
-		$max = 0;
-		foreach ( $names as $n ) {
-			if (intval ( $n->name ) >= $max) {
-				$max = intval ( $n->name );
+
+		if (!$formdata->groupname){
+			$names = $DB->get_records_sql ( "SELECT g.name
+	                   FROM {groups} g
+	                  WHERE g.courseid = ?", $params );
+			
+			$max = 0;
+			foreach ( $names as $n ) {
+				if (intval ( $n->name ) >= $max) {
+					$max = intval ( $n->name );
+				}
 			}
+			
+			$groupname =  strval ( $max + 1 );
 		}
+		else{
+			$groupname = $formdata->groupname;
+		}		
 		
 		$data = ( object ) array (
-				'name' => strval ( $max + 1 ),
+				'name' => $groupname,
 				'description' => $formdata->description,
-				'courseid' => $course->id 
+				'courseid' => $course->id
 		);
 		$id = groups_create_group ( $data, false );
 		if ($groupselect->targetgrouping != 0) {
@@ -191,8 +200,9 @@ if ($cancreate and $isopen) {
 			$DB->insert_record ( 'groupselect_passwords', $passworddata, false );
 		}
 		redirect ( $PAGE->url );
-	} else if ($create) {
+	} else if ($create or $mform->is_submitted()) {
 		// If create button was clicked, show the form
+		// or show validation errors
 		echo $OUTPUT->header ();
 		echo $OUTPUT->heading ( get_string ( 'creategroup', 'mod_groupselect' ) );
 		$mform->display ();
