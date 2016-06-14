@@ -1,5 +1,6 @@
 Group self-selection module for Moodle
 
+* Copyright (C) 2016 HTWChur
 * Copyright (C) 2014 Tampere University of Technology, Pirkka Pyykkönen (pirkka.pyykkonen ÄT tut.fi)
 * Copyright (C) 2008-2011 Petr Skoda (http://skodak.org/)
 
@@ -22,17 +23,20 @@ Lets students create and select groups. Features:
 * Teacher can export course group list as a csv-file
 * Full compatibility with basic Moodle groups: groups may be created by other means if needed, supports group assignment submissions etc.
 
-Currently in beta stage, any feedback would be appreciated!
 
-Thanks to Petr Skoda, Helen Foster, Daniel Neis Araujo and other
+Thanks to Pirkka Pyykkönen, Petr Skoda, Helen Foster, Daniel Neis Araujo and other
 contributors, on whose earlier work this plugin is based on.
 
 Project page:
 
-* https://github.com/birrel/moodle-mod_groupselect (current)
+* https://github.com/BLC-HTWChur/moodle-mod_groupselect (current fork) by HTWChur
+* https://github.com/birrel/moodle-mod_groupselect (fork) by Pirkka Pyykkönen 
 * https://github.com/skodak/moodle-mod_groupselect (original <= 2.1 versions) by Petr Skoda
 
 NOTABLE UPDATES:
+* 2016.06.11: new option to disable notifications if the open until date is reached
+* 2016.06.06: new option for students to define the group name, new option to avoid that students can define passwords,
+fixed validation messages for creating groups, fixed install.xml
 * 2016.06.02: fixed wrong instance_id in table groupselect_groups_teachers, backup and restore works now,
 added new logging events for adding non-editign teachers and creating a downloadlink, some small fixes
 * 2016.05.09: Removed general setting 'requiremodintro', not supported anymore
