@@ -119,12 +119,13 @@ class mod_groupselect_mod_form extends moodleform_mod {
         $mform->addElement('advcheckbox', 'deleteemptygroups', get_string('deleteemptygroups', 'mod_groupselect'), '',
         		array('optional'=>true, 'group'=>null), array(0,1));
         $mform->addHelpButton('deleteemptygroups', 'deleteemptygroups', 'mod_groupselect');
-        $mform->setDefault('deleteemptygroups', true);
-        
+        $mform->setDefault('deleteemptygroups', true);        
 
-        
-        
-         
+        $mform->addElement('advcheckbox', 'notifyexpiredselection', get_string('notifyexpiredselection', 'mod_groupselect'), '',
+        		array('optional'=>true, 'group'=>null), array(0,1));
+        $mform->addHelpButton('notifyexpiredselection', 'notifyexpiredselection', 'mod_groupselect');
+        $mform->setDefault('notifyexpiredselection', true);
+                 
      
 
         //-------------------------------------------------------------------------------

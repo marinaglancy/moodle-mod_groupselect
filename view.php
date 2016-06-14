@@ -120,7 +120,7 @@ if (! is_enrolled ( $context )) {
 } else {
 	if (! has_capability ( 'mod/groupselect:select', $context )) {
 		$problems [] = get_string ( 'cannotselectnocap', 'mod_groupselect' );
-	} else if ($groupselect->timedue != 0 and $groupselect->timedue < time ()) {
+	} else if ($groupselect->timedue != 0 and $groupselect->timedue < time () and ($groupselect->notifyexpiredselection)) {
 		$problems [] = get_string ( 'notavailableanymore', 'mod_groupselect', userdate ( $groupselect->timedue ) );
 	}
 }
@@ -659,7 +659,7 @@ if (empty ( $groups )) {
 		} else {
 			$line [2] = $usercount;
 		}
-		
+
 		if ($accessall) {
 			$canseemembers = true;
 		} else {
