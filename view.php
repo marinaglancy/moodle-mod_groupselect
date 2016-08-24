@@ -741,14 +741,14 @@ if (empty ( $groups )) {
 				$line [5] = $OUTPUT->single_button ( new moodle_url ( '/mod/groupselect/view.php', array (
 						'id' => $cm->id,
 						'unselect' => $group->id 
-				) ), get_string ( 'unselect', 'mod_groupselect', $grpname ) );
+				) ), get_string ( 'unselect', 'mod_groupselect', "") );
 				$actionpresent = true;
 			} else if (! $ismember and $canselect) {
 				$line [5] = $OUTPUT->single_button ( new moodle_url ( '/mod/groupselect/view.php', array (
 						'id' => $cm->id,
 						'select' => $group->id,
 						'group_password' => $group->password 
-				) ), get_string ( 'select', 'mod_groupselect', $grpname ) );
+				) ), get_string ( 'select', 'mod_groupselect', "") );
 				$actionpresent = true;
 			} else {
 				$line [5] = '';
@@ -766,7 +766,7 @@ if (empty ( $groups )) {
 	echo html_writer::script ( $sortscript );
 	$table = new html_table ();
 	$table->attributes = array (
-			'class' => 'generaltable sortable',
+			'class' => 'generaltable sortable groupselect-table',
 	);
 	$table->head = array (
 			$strgroup,
@@ -775,33 +775,7 @@ if (empty ( $groups )) {
 			$strmembers,
 			'' 
 	);
-	$table->size = array (
-			'5%',
-			'40%',
-			'5%',
-			'42%',
-			'8%',
-			'0%' 
-	);
-	$table->align = array (
-			'left',
-			'center',
-			'left',
-			'left',
-			'left',
-			'center' 
-	);
-	if ($actionpresent) {
-		$table->head [] = $straction;
-		$table->size = array (
-				'5%',
-				'40%',
-				'5%',
-				'32%',
-				'8%',
-				'10%' 
-		);
-	}
+	
 	$table->data = $data;
 	echo html_writer::table ( $table );
   
