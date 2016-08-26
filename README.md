@@ -34,6 +34,7 @@ Project page:
 * https://github.com/skodak/moodle-mod_groupselect (original <= 2.1 versions) by Petr Skoda
 
 NOTABLE UPDATES:
+* 2016.08.26: enabled show description feature and tableview improvements for longer groupnames
 * 2016.06.11: new option to disable notifications if the open until date is reached
 * 2016.06.06: new option for students to define the group name, new option to avoid that students can define passwords,
 fixed validation messages for creating groups, fixed install.xml
