@@ -25,3 +25,43 @@
 table.sortable th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):not(.sorttable_nosort):after { 
     content: " \25B4\25BE" 
 }
+
+/*fix hyphens in table for narrow views*/
+.groupselect-table {
+     -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    -ms-hyphens: auto;
+    hyphens: auto;
+}
+
+/*fix width and wrap for groupselect table*/
+.groupselect-table .lastcol input[type="submit"], .groupselect-table .lastcol input[type="submit"]:first-child{
+    white-space: pre-wrap;
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    -ms-hyphens: auto;
+    hyphens: auto;
+    /*fix button width*/
+    min-width: 144px;
+}
+
+
+.c3 span, .c3 a {
+    white-space: nowrap;
+}
+td.cell.c3 {
+    min-width: 185px;
+    max-width: 200px;
+    width: auto;
+}
+.c3 a img {
+    margin-top: 4px;
+}
+
+tr div{
+    word-break: normal;
+    
+}
+th {
+    white-space: nowrap;
+}
