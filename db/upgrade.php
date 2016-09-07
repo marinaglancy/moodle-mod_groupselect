@@ -165,5 +165,32 @@ function xmldb_groupselect_upgrade($oldversion) {
 
     	upgrade_mod_savepoint(true, 2015032500, 'groupselect');
     }
+
+    if ($oldversion < 2016090700) {
+
+        // Field groupselect_groups_teachers.instance_id mistakenly points to cmid.
+        $sql = "SELECT cm.id, cm.instance
+                  FROM {course_modules} cm
+                       JOIN {modules} md ON md.id = cm.module
+                       JOIN {groupselect} g ON g.id = cm.instance
+                 WHERE md.name = ?";
+        $mapping = $DB->get_records_sql_menu($sql, ['groupselect']);
+
+        $records = $DB->get_records('groupselect_groups_teachers',
+                [], '', 'id, instance_id');
+        foreach ($records as $record) {
+            if (array_key_exists($record->instance_id, $mapping)) {
+                // Change reference from course module id to instance id.
+                $DB->update_record('groupselect_groups_teachers',
+                    ['id' => $record->id, 'instance_id' => $mapping[$record->instance_id]]);
+            } else {
+                // Orphaned record - delete.
+                $DB->delete_record('groupselect_groups_teachers', ['id' => $record->id]);
+            }
+        }
+
+        upgrade_mod_savepoint(true, 2016090700, 'groupselect');
+    }
+
     return true;
 }

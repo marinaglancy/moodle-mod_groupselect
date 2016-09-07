@@ -280,7 +280,7 @@ if ($select and $canselect and isset ( $groups [$select] ) and $isopen) {
 // Group user data export
 if ($export and $canexport) {
 	// Fetch groups & assigned teachers
-        $params = ['cmid' => $id, 'courseid' => $course->id];
+        $params = ['cmid' => $id, 'courseid' => $course->id, 'instanceid' => $groupselect->id];
         $groupingsql = '';
         if ($groupselect->targetgrouping) {
             $groupingsql = "JOIN {groupings_groups} gg ON gg.groupid = g.id AND gg.groupingid = :grouping";
@@ -290,7 +290,7 @@ if ($export and $canexport) {
 			  FROM {groups} g
                  $groupingsql
 		 LEFT JOIN {groupselect_groups_teachers} gt
-			    ON g.id = gt.groupid AND gt.instance_id = :cmid
+			    ON g.id = gt.groupid AND gt.instance_id = :instanceid
 		 LEFT JOIN {user} u
 			    ON u.id = gt.teacherid
 			 WHERE g.courseid = :courseid
@@ -446,11 +446,11 @@ if ($assign and $canassign) {
         require_sesskey();
 
 	$already_assigned = count ( $DB->get_records ( 'groupselect_groups_teachers', array (
-			'instance_id' => $id
+			'instance_id' => $groupselect->id
 	) ) ) > 0 ? true : false;
 	if ($already_assigned) {
 		$DB->delete_records ( 'groupselect_groups_teachers', array (
-				'instance_id' => $id
+				'instance_id' => $groupselect->id
 		) );
 	}
 
@@ -471,7 +471,7 @@ if ($assign and $canassign) {
 			array_push ( $group_teacher_relations, ( object ) array (
 					'groupid' => $group,
 					'teacherid' => $teacher->userid,
-					'instance_id' => $id
+					'instance_id' => $groupselect->id
 			) );
 			$i ++;
 		}
@@ -560,7 +560,7 @@ if (empty ( $groups )) {
 	$assigned_relation = $DB->get_records_sql ( "SELECT g.id AS rid, g.teacherid AS id, g.groupid
     											FROM  {groupselect_groups_teachers} g
     									     	WHERE g.instance_id = ?", array (
-                                                                                    'instance_id' => $id
+                                                                                    $groupselect->id
 	) );
 	$assigned_teacher_ids = array ();
 	foreach ( $assigned_relation as $r ) {
