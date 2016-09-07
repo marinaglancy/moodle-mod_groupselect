@@ -13,7 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
- 
+
 /**
  * The group_teacher_added event.
  *
@@ -43,25 +43,25 @@ class group_teacher_added extends \core\event\base {
         $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
         $this->data['objecttable'] = 'groupselect_groups_teachers';
     }
- 
+
     public static function get_name() {
         return get_string('eventgroupteacheradded', 'mod_groupselect');
     }
- 
+
     public function get_description() {
         return "The user with id '$this->userid' added the non editing teacher user with id '$this->relateduserid' " .
         		"to the groupselect with the course module id '$this->contextinstanceid' and group id '{$this->objectid}'";
     }
- 
+
     public function get_url() {
         return new \moodle_url('/mod/groupselect/view.php', array('id' => $this->contextinstanceid));
     }
-    
+
 
 	public static function get_objectid_mapping() {
 		return array('db' => 'groupselect_groups_teachers', 'restore' => 'groupselect_groups_teacher');
 	}
-	
+
 	public static function get_other_mapping() {
         $othermapped = array();
         $othermapped['groupid'] = array('db' => 'group', 'restore' => 'group');

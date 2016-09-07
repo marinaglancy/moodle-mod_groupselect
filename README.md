@@ -30,7 +30,7 @@ contributors, on whose earlier work this plugin is based on.
 Project page:
 
 * https://github.com/BLC-HTWChur/moodle-mod_groupselect (current fork) by HTWChur
-* https://github.com/birrel/moodle-mod_groupselect (fork) by Pirkka Pyykkönen 
+* https://github.com/birrel/moodle-mod_groupselect (fork) by Pirkka Pyykkönen
 * https://github.com/skodak/moodle-mod_groupselect (original <= 2.1 versions) by Petr Skoda
 
 NOTABLE UPDATES:
@@ -43,7 +43,7 @@ added new logging events for adding non-editign teachers and creating a download
 * 2016.05.09: Removed general setting 'requiremodintro', not supported anymore
 * 2015.03.25: Fixed: password was asked when joining group without
 password (if upgraded from older versions), sql queries should now work
-with oracle 
+with oracle
 * 2014.12.17: Migrated to new logging system
 * 2014.12.15: Small fixes
 * 2014.12.01: Fixed upgrade.php, project renamed as groupselect

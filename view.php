@@ -44,18 +44,18 @@ $newdescription = optional_param ( 'newdescription', 0, PARAM_TEXT );
 
 if ($g) {
 	$groupselect = $DB->get_record ( 'groupselect', array (
-			'id' => $g 
+			'id' => $g
 	), '*', MUST_EXIST );
 	$cm = get_coursemodule_from_instance ( 'groupselect', $groupselect->id, $groupselect->course, false, MUST_EXIST );
 } else {
 	$cm = get_coursemodule_from_id ( 'groupselect', $id, 0, false, MUST_EXIST );
 	$groupselect = $DB->get_record ( 'groupselect', array (
-			'id' => $cm->instance 
+			'id' => $cm->instance
 	), '*', MUST_EXIST );
 }
 
 $course = $DB->get_record ( 'course', array (
-		'id' => $cm->course 
+		'id' => $cm->course
 ), '*', MUST_EXIST );
 
 require_login ( $course, true, $cm );
@@ -64,7 +64,7 @@ $context = context_module::instance ( $cm->id );
 //add_to_log ( $course->id, 'groupselect', 'view', 'view.php?id=' . $cm->id, $groupselect->id, $cm->id );
 
 $PAGE->set_url ( '/mod/groupselect/view.php', array (
-		'id' => $cm->id 
+		'id' => $cm->id
 ) );
 $PAGE->add_body_class ( 'mod_groupselect' );
 $PAGE->set_title ( $course->shortname . ': ' . $groupselect->name );
@@ -97,7 +97,7 @@ $canunselect = (has_capability ( 'mod/groupselect:unselect', $context ) and is_e
 $cancreate = ($groupselect->studentcancreate and has_capability ( 'mod/groupselect:create', $context ) and is_enrolled ( $context ) and empty ( $mygroups ));
 $canexport = (has_capability ( 'mod/groupselect:export', $context ) and count ( $groups ) > 0);
 $canassign = (has_capability ( 'mod/groupselect:assign', $context ) and $groupselect->assignteachers and (count(groupselect_get_context_members_by_role ( context_course::instance ( $course->id )->id, $ASSIGNROLE )) > 0));
-$canedit = ($groupselect->studentcansetdesc and $isopen); 
+$canedit = ($groupselect->studentcansetdesc and $isopen);
 $cansetgroupname = ($groupselect->studentcansetgroupname);
 
 if ($course->id == SITEID) {
@@ -125,7 +125,7 @@ if (! is_enrolled ( $context )) {
 	}
 }
 
-// Group description edit 
+// Group description edit
 if($groupid and $canedit and isset($mygroups[$groupid]) and data_submitted()) {
     $egroup = $DB->get_record_sql("SELECT *
                                  FROM {groups} g
@@ -145,11 +145,11 @@ if($groupid and $canedit and isset($mygroups[$groupid]) and data_submitted()) {
 if ($cancreate and $isopen) {
 	$data = array (
 			'id' => $id,
-			'description' => '' 
+			'description' => ''
 	);
 	$mform = new create_form ( null, array (
 			$data,
-			$groupselect 
+			$groupselect
 	) );
 	if ($mform->is_cancelled ()) {
 		redirect ( $PAGE->url );
@@ -157,27 +157,27 @@ if ($cancreate and $isopen) {
 	if ($formdata = $mform->get_data ()) {
 		// Create a new group and add the creator as a member of it
 		$params = array (
-			$course->id 
+			$course->id
 		);
 
 		if (!$formdata->groupname){
 			$names = $DB->get_records_sql ( "SELECT g.name
 	                   FROM {groups} g
 	                  WHERE g.courseid = ?", $params );
-			
+
 			$max = 0;
 			foreach ( $names as $n ) {
 				if (intval ( $n->name ) >= $max) {
 					$max = intval ( $n->name );
 				}
 			}
-			
+
 			$groupname =  strval ( $max + 1 );
 		}
 		else{
 			$groupname = $formdata->groupname;
-		}		
-		
+		}
+
 		$data = ( object ) array (
 				'name' => $groupname,
 				'description' => $formdata->description,
@@ -187,15 +187,15 @@ if ($cancreate and $isopen) {
 		if ($groupselect->targetgrouping != 0) {
 			groups_assign_grouping ( $groupselect->targetgrouping, $id );
 		}
-		
+
 		groups_add_member ( $id, $USER->id );
 		//add_to_log ( $course->id, 'groupselect', 'select', 'view.php?id=' . $cm->id, $groupselect->id, $cm->id );
-		
+
 		if ($formdata->password !== '') {
 			$passworddata = ( object ) array (
 					'groupid' => $id,
 					'password' => password_hash ( $formdata->password, PASSWORD_DEFAULT ),
-					'instance_id' => $groupselect->id 
+					'instance_id' => $groupselect->id
 			);
 			$DB->insert_record ( 'groupselect_passwords', $passworddata, false );
 		}
@@ -213,27 +213,27 @@ if ($cancreate and $isopen) {
 
 // Student group self-selection
 if ($select and $canselect and isset ( $groups [$select] ) and $isopen) {
-	
+
 	$grpname = format_string ( $groups [$select]->name, true, array (
-			'context' => $context 
+			'context' => $context
 	) );
 	$usercount = isset ( $counts [$select] ) ? $counts [$select]->usercount : 0;
-	
+
 	$data = array (
 			'id' => $id,
 			'select' => $select,
-			'group_password' => $password 
+			'group_password' => $password
 	);
 	$mform = new select_form ( null, array (
 			$data,
 			$groupselect,
-			$grpname 
+			$grpname
 	) );
-	
+
 	if ($mform->is_cancelled ()) {
 		redirect ( $PAGE->url );
 	}
-	
+
 	if (! $isopen) {
 		$problems [] = get_string ( 'cannotselectclosed', 'mod_groupselect' );
 	} else if ($groupselect->maxmembers and $groupselect->maxmembers <= $usercount) {
@@ -255,7 +255,7 @@ if ($select and $canselect and isset ( $groups [$select] ) and $isopen) {
 	}
 } else if ($unselect and $canunselect and isset ( $mygroups [$unselect] )) {
 	// user unselected group
-	
+
 	if (! $isopen) {
 		$problems [] = get_string ( 'cannotunselectclosed', 'mod_groupselect' );
 	} else if ($confirm and data_submitted () and confirm_sesskey ()) {
@@ -263,7 +263,7 @@ if ($select and $canselect and isset ( $groups [$select] ) and $isopen) {
 		if ($groupselect->deleteemptygroups and ! groups_get_members ( $unselect )) {
 			groups_delete_group ( $unselect );
 			$DB->delete_records ( 'groupselect_passwords', array (
-					'groupid' => $unselect 
+					'groupid' => $unselect
 			) );
 			$DB->delete_records ( 'groupselect_groups_teachers', array (
 					'groupid' => $unselect
@@ -274,7 +274,7 @@ if ($select and $canselect and isset ( $groups [$select] ) and $isopen) {
 		redirect ( $PAGE->url );
 	} else {
 		$grpname = format_string ( $mygroups [$unselect]->name, true, array (
-				'context' => $context 
+				'context' => $context
 		) );
 		echo $OUTPUT->header ();
 		echo $OUTPUT->heading ( get_string ( 'unselect', 'mod_groupselect', $grpname ) );
@@ -282,7 +282,7 @@ if ($select and $canselect and isset ( $groups [$select] ) and $isopen) {
 				'id' => $cm->id,
 				'unselect' => $unselect,
 				'confirm' => 1,
-				'sesskey' => sesskey () 
+				'sesskey' => sesskey ()
 		) );
 		$message = get_string ( 'unselectconfirm', 'mod_groupselect', $grpname );
 		echo $OUTPUT->confirm ( $message, $yesurl, $PAGE->url );
@@ -294,49 +294,49 @@ if ($select and $canselect and isset ( $groups [$select] ) and $isopen) {
 // Group user data export
 if ($export and $canexport) {
 	// TODO: export only from target grouping
-	// 
+	//
 	// Fetch groups & assigned teachers
 	$sql = "SELECT gt.id, g.id AS groupid, g.name, g.description, u.username, u.firstname, u.lastname, u.email
 			  FROM {groups} g
 		 LEFT JOIN {groupselect_groups_teachers} gt
 			    ON g.id = gt.groupid
-		 LEFT JOIN {user} u 
+		 LEFT JOIN {user} u
 			    ON u.id = gt.teacherid
 			 WHERE g.courseid = ?
 		  ORDER BY g.id ASC";
-	
+
 	$group_list = $DB->get_records_sql ( $sql, array (
-			$course->id 
+			$course->id
 	) );
-	
+
 	// Fetch students & groups
-	$sql = "SELECT m.id, u.username, u.idnumber, u.firstname, u.lastname, u.email, g.id AS groupid 
+	$sql = "SELECT m.id, u.username, u.idnumber, u.firstname, u.lastname, u.email, g.id AS groupid
             FROM   {user} u, {groups} g, {groups_members} m
             WHERE  g.courseid = ?
             AND    g.id = m.groupid
             AND    u.id = m.userid
             ORDER BY groupid ASC";
-	
+
 	$students = $DB->get_records_sql ( $sql, array (
-			$course->id 
+			$course->id
 	) );
-	
+
 	// Fetch max number of students in a group (may differ from setting, because teacher may add members w/o limits)
 	$sql = "SELECT MAX(m.members) AS max
-			  FROM (SELECT s.groupid, COUNT(s.groupid) AS members 
+			  FROM (SELECT s.groupid, COUNT(s.groupid) AS members
 			          FROM (SELECT g.id AS groupid
             				  FROM {user} u, {groups} g, {groups_members} m
                              WHERE g.courseid = ?
                                AND g.id = m.groupid
                                AND u.id = m.userid
                           ORDER BY groupid ASC) s
-			      GROUP BY s.groupid) m";		
-			
+			      GROUP BY s.groupid) m";
+
 	$max_group_size = $DB->get_records_sql ( $sql, array (
-			$course->id 
+			$course->id
 	) );
 	$max_group_size = array_pop($max_group_size)->max;
-	
+
 	 foreach ($students as $student) {
 	 	$gid = $student->groupid;
 	 	foreach ($group_list as $group) {
@@ -350,7 +350,7 @@ if ($export and $canexport) {
 	 		}
 	 	}
 	 }
-	
+
 	// Format data to csv
 	$QUOTE = '"';
 	$CHARS_TO_ESCAPE = array(
@@ -365,7 +365,7 @@ if ($export and $canexport) {
 //			get_string ( 'assignedteacher', 'mod_groupselect' ) . ' ' . get_string ( 'username' ),
 //			get_string ( 'assignedteacher', 'mod_groupselect' ) . ' ' . get_string ( 'firstname' ),
 //			get_string ( 'assignedteacher', 'mod_groupselect' ) . ' ' . get_string ( 'lastname' ),
-//			get_string ( 'assignedteacher', 'mod_groupselect' ) . ' ' . get_string ( 'email' ) 
+//			get_string ( 'assignedteacher', 'mod_groupselect' ) . ' ' . get_string ( 'email' )
 
         'Group ID',
         'Group Name',
@@ -383,7 +383,7 @@ if ($export and $canexport) {
 //		$header[] = get_string('member', 'mod_groupselect').' '.strval($i+1).' '. get_string ( 'firstname' );
 //		$header[] = get_string('member', 'mod_groupselect').' '.strval($i+1).' '. get_string ( 'lastname' );
 //		$header[] = get_string('member', 'mod_groupselect').' '.strval($i+1).' '. get_string ( 'email' );
-            
+
 		$header[] = $group_member.strval($i+1).' '.'Username';
 		$header[] = $group_member.strval($i+1).' '.'ID Number';
 		$header[] = $group_member.strval($i+1).' '.'Firstname';
@@ -391,11 +391,11 @@ if ($export and $canexport) {
 		$header[] = $group_member.strval($i+1).' '.'Email';
 	}
 	$content = implode ( (','), $header ) . "\n";
-        
+
         // TODO: add better export options
         // Quick workaround for Excel
         $content = 'sep=,' . "\n" . $content;
-	
+
         foreach ( $group_list as $r ) {
 		$row = array (
 				$QUOTE.strtr($r->groupid, $CHARS_TO_ESCAPE).$QUOTE,
@@ -404,8 +404,8 @@ if ($export and $canexport) {
 				$QUOTE.strtr($r->username, $CHARS_TO_ESCAPE).$QUOTE,
 				$QUOTE.strtr($r->firstname, $CHARS_TO_ESCAPE).$QUOTE,
 				$QUOTE.strtr($r->lastname, $CHARS_TO_ESCAPE).$QUOTE,
-				$QUOTE.strtr($r->email, $CHARS_TO_ESCAPE).$QUOTE               
-				
+				$QUOTE.strtr($r->email, $CHARS_TO_ESCAPE).$QUOTE
+
 		);
 		$groupsize = 0;
 		for($i=1; $i < $max_group_size +1; $i++) {
@@ -426,7 +426,7 @@ if ($export and $canexport) {
 		array_splice($row, 2, 0, $QUOTE.strval($groupsize).$QUOTE);
 		$content = $content . implode ( (','), $row ) . "\n";
 	}
-	
+
 	// File info
 	$separator = '_';
 	$filename = get_string ( 'modulename', 'mod_groupselect' ) . $separator . $course->shortname . $separator . date ( 'Y-m-d' ) . '.csv';
@@ -438,21 +438,21 @@ if ($export and $canexport) {
 			'filearea' => 'export', // usually = table name
 			'itemid' => $groupselect->id, // usually = ID of row in table
 			'filepath' => '/', // any path beginning and ending in /
-			'filename' => $filename 
+			'filename' => $filename
 	); // any filename
-	   
+
 	// See if same file exists
 	$file = $fs->get_file ( $fileinfo ['contextid'], $fileinfo ['component'], $fileinfo ['filearea'], $fileinfo ['itemid'], $fileinfo ['filepath'], $fileinfo ['filename'] );
-	
+
 	// Delete already existing file
 	if ($file) {
 		$file->delete ();
 	}
-	
+
 	$file = $fs->create_file_from_string ( $fileinfo, $content );
 	// Store file url to show later
 	$exporturl = moodle_url::make_pluginfile_url ( $file->get_contextid (), $file->get_component (), $file->get_filearea (), $file->get_itemid (), $file->get_filepath (), $file->get_filename () );
-	
+
 	// event logging
 	$event = \mod_groupselect\event\export_link_created::create(array(
 			'context' => $context,
@@ -464,18 +464,18 @@ if ($export and $canexport) {
 if ($assign and $canassign) {
 
 	$already_assigned = count ( $DB->get_records ( 'groupselect_groups_teachers', array (
-			'instance_id' => $groupselect->id 
+			'instance_id' => $groupselect->id
 	) ) ) > 0 ? true : false;
 	if ($already_assigned) {
 		$DB->delete_records ( 'groupselect_groups_teachers', array (
-				'instance_id' => $groupselect->id 
+				'instance_id' => $groupselect->id
 		) );
 	}
-	
+
 	$course_context = context_course::instance ( $course->id )->id;
 	$teachers = groupselect_get_context_members_by_role ( $course_context, $ASSIGNROLE );
 	shuffle( $teachers );
-	
+
 	$agroups = $groups;
 	$teacher_count = count($teachers);
 
@@ -484,29 +484,29 @@ if ($assign and $canassign) {
 		$iterations = ceil ( count( $agroups ) / $teacher_count );
 		while ( $i < $iterations ) {
 			$group = array_rand ( $agroups );
-			
+
 			unset ( $agroups [$group] );
 			$new_group_teacher_relation = ( object ) array (
 					'groupid' => $group,
 					'teacherid' => $teacher->userid,
 					'instance_id' => $groupselect->id
-			); 
-			
+			);
+
 			$gsgteacherid = $DB->insert_record ( 'groupselect_groups_teachers', $new_group_teacher_relation );
 			$new_group_teacher_relation->id = $gsgteacherid;
-			
-			// event logging 
+
+			// event logging
 			$event = \mod_groupselect\event\group_teacher_added::create(array(
 					'context' => $context,
 					'objectid' => $gsgteacherid,
 					'relateduserid' => $teacher->userid,
 					'other' => array(
-                    'groupid' => $group)					
+                    'groupid' => $group)
 					));
 			$event->add_record_snapshot('groupselect', $groupselect);
 			$event->add_record_snapshot('groupselect_groups_teachers', $new_group_teacher_relation);
 			$event->trigger();
-			
+
 			$i ++;
 		}
     $teacher_count --;
@@ -517,7 +517,7 @@ if ($assign and $canassign) {
 // *** PAGE OUTPUT ***
 echo $OUTPUT->header ();
 echo $OUTPUT->heading ( format_string ( $groupselect->name, true, array (
-		'context' => $context 
+		'context' => $context
 ) ) );
 
 if (trim ( strip_tags ( $groupselect->intro ) )) {
@@ -548,7 +548,7 @@ if ($groupselect->timedue !== 0 and $groupselect->timedue > time ()) {
 if ($cancreate and $isopen and ! $create) {
 	echo $OUTPUT->single_button ( new moodle_url ( '/mod/groupselect/view.php', array (
 			'id' => $cm->id,
-			'create' => true 
+			'create' => true
 	) ), get_string ( 'creategroup', 'mod_groupselect' ) );
 }
 
@@ -557,18 +557,18 @@ if ($canexport) {
     if( $exporturl === '' ) {
     echo $OUTPUT->single_button ( new moodle_url ( '/mod/groupselect/view.php', array (
 			'id' => $cm->id,
-			'export' => true 
+			'export' => true
 	) ), get_string ( 'export', 'mod_groupselect' ) );
     }
     else{
         echo '<div class="export_url" >';
         echo $OUTPUT->action_link ( $exporturl, get_string ( 'export_download', 'mod_groupselect' ) );
-	echo '</div> <br>';        
+	echo '</div> <br>';
     }
 }
 
 // Assign button
-if ($canassign and count($groups) > 0 )  {		
+if ($canassign and count($groups) > 0 )  {
 	$action = new confirm_action(get_string('assigngroup_confirm', 'mod_groupselect'));
     $button = new single_button(new moodle_url ( '/mod/groupselect/view.php', array (
 			'id' => $cm->id,
@@ -586,14 +586,14 @@ if (empty ( $groups )) {
 			echo $OUTPUT->notification ( $problem, 'notifyproblem' );
 		}
 	}
-	
+
 	$data = array ();
 	$actionpresent = false;
-	
+
 	$assigned_relation = $DB->get_records_sql ( "SELECT g.id AS rid, g.teacherid AS id, g.groupid
     											FROM  {groupselect_groups_teachers} g
     									     	WHERE g.instance_id = ?", array (
-                                                                                    'instance_id' => $groupselect->id 
+                                                                                    'instance_id' => $groupselect->id
 	) );
 	$assigned_teacher_ids = array ();
 	foreach ( $assigned_relation as $r ) {
@@ -612,27 +612,27 @@ if (empty ( $groups )) {
 	//	$sql = $sql . ";";
 		$assigned_teachers = $DB->get_records_sql ( $sql, $assigned_teacher_ids );
 	}
-	
+
 	// Group list
 	foreach ( $groups as $group ) {
-		
-		$ismember = isset ( $mygroups [$group->id] );                
+
+		$ismember = isset ( $mygroups [$group->id] );
 		$usercount = isset ( $counts [$group->id] ) ? $counts [$group->id]->usercount : 0;
 		$grpname = format_string ( $group->name, true, array (
-				'context' => $context 
+				'context' => $context
 		) );
-		
+
 		// Skips listing full groups if set
 		if (! $ismember and $hidefullgroups and $groupselect->maxmembers === $usercount) {
 			continue;
 		}
-		
+
 		if (in_array ( $group->id, $passwordgroups )) {
 			$group->password = true;
 		} else {
 			$group->password = false;
 		}
-		
+
 		// Groupname
 		$line = array ();
 		if ($ismember) {
@@ -640,19 +640,19 @@ if (empty ( $groups )) {
 		} else {
 			$line [0] = $grpname;
 		}
-		
+
 		// Group description
                 if( $ismember and $canedit ) {
-                    $line [1] = '<div id="' . $group->id . '" class="edit">' . 
+                    $line [1] = '<div id="' . $group->id . '" class="edit">' .
                             //$group->description
                             strip_tags(groupselect_get_group_info ( $group ))
                             . '</div>';
                 }
                 else {
                     $line [1] = strip_tags(groupselect_get_group_info ( $group ));
-                    
+
                 }
-                
+
 		// Member count
 		if ($groupselect->maxmembers) {
 			$line [2] = $usercount . '/' . $groupselect->maxmembers;
@@ -669,14 +669,14 @@ if (empty ( $groups )) {
 				$canseemembers = $viewothers;
 			}
 		}
-		
+
 		// Group members
 		if ($canseemembers) {
 			if ($members = groups_get_members ( $group->id )) {
 				$membernames = array ();
 				foreach ( $members as $member ) {
 					$pic = $OUTPUT->user_picture ( $member, array (
-							'courseid' => $course->id 
+							'courseid' => $course->id
 					) );
 					if ($member->id == $USER->id) {
 						$membernames [] = '<span class="me">' . $pic . '&nbsp;' . fullname ( $member, $viewfullnames ) . '</span>';
@@ -702,7 +702,7 @@ if (empty ( $groups )) {
 						}
 					}
 					$pic = $OUTPUT->user_picture ( $teacher, array (
-							'courseid' => $course->id 
+							'courseid' => $course->id
 					) );
 					if ($teacher->id == $USER->id) {
 						$membernames [] = '<span class="me">' . $pic . '&nbsp;' . fullname ( $teacher, $viewfullnames ) . ' (' . get_string ( 'assignedteacher', 'mod_groupselect' ) . ')'.'</span>';
@@ -717,21 +717,21 @@ if (empty ( $groups )) {
 		} else {
 			$line [3] = '<div class="membershidden">' . get_string ( 'membershidden', 'mod_groupselect' ) . '</div>';
 		}
-		
+
 		// Icons
 		$line [4] = '<div class="icons">';
 		if ($groupselect->minmembers > $usercount) {
 			$line [4] = $line [4] . $OUTPUT->pix_icon ( 'i/risk_xss', get_string ( 'minmembers_icon', 'mod_groupselect' ), null, array (
-					'align' => 'left' 
+					'align' => 'left'
 			) );
 		}
 		if ($group->password) {
 			$line [4] = $line [4] . $OUTPUT->pix_icon ( 't/locked', get_string ( 'password', 'mod_groupselect' ), null, array (
-					'align' => 'right' 
+					'align' => 'right'
 			) );
 		}
 		$line [4] = $line [4] . '</div>';
-                
+
 		// Action buttons
 		if ($isopen) {
 			if (! $ismember and $canselect and $groupselect->maxmembers and $groupselect->maxmembers <= $usercount) {
@@ -740,14 +740,14 @@ if (empty ( $groups )) {
 			} else if ($ismember and $canunselect) {
 				$line [5] = $OUTPUT->single_button ( new moodle_url ( '/mod/groupselect/view.php', array (
 						'id' => $cm->id,
-						'unselect' => $group->id 
+						'unselect' => $group->id
 				) ), get_string ( 'unselect', 'mod_groupselect', "") );
 				$actionpresent = true;
 			} else if (! $ismember and $canselect) {
 				$line [5] = $OUTPUT->single_button ( new moodle_url ( '/mod/groupselect/view.php', array (
 						'id' => $cm->id,
 						'select' => $group->id,
-						'group_password' => $group->password 
+						'group_password' => $group->password
 				) ), get_string ( 'select', 'mod_groupselect', "") );
 				$actionpresent = true;
 			} else {
@@ -761,7 +761,7 @@ if (empty ( $groups )) {
                     array_unshift($data, $line);
                 }
 	}
-	
+
 	$sortscript = file_get_contents ( './lib/sorttable/sorttable.js' );
 	echo html_writer::script ( $sortscript );
 	$table = new html_table ();
@@ -773,12 +773,12 @@ if (empty ( $groups )) {
 			$strgroupdesc,
 			$strcount,
 			$strmembers,
-			'' 
+			''
 	);
-	
+
 	$table->data = $data;
 	echo html_writer::table ( $table );
-  
+
 }
 
 echo $OUTPUT->footer ();
@@ -789,7 +789,7 @@ echo '<script type="text/javascript">$(document).ready(function() {
      $(".edit").editable("' . $url .'", {
         id        : "groupid",
         name      : "newdescription",
-        type      : "textarea", 
+        type      : "textarea",
         submit    : "'.get_string('ok', 'mod_groupselect').'",
         indicator : "'.get_string('saving', 'mod_groupselect').'",
         tooltip   : "'.get_string('edittooltip', 'mod_groupselect').'"

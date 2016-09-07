@@ -22,8 +22,8 @@
   word-break: break-all !important;
 }
 
-table.sortable th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):not(.sorttable_nosort):after { 
-    content: " \25B4\25BE" 
+table.sortable th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):not(.sorttable_nosort):after {
+    content: " \25B4\25BE"
 }
 
 /*fix hyphens in table for narrow views*/
@@ -60,7 +60,7 @@ td.cell.c3 {
 
 tr div{
     word-break: normal;
-    
+
 }
 th {
     white-space: nowrap;

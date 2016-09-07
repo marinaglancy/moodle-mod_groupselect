@@ -13,7 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
- 
+
 /**
  * The export_link_created event.
  *
@@ -41,14 +41,14 @@ class export_link_created extends \core\event\base {
     public static function get_name() {
         return get_string('eventexportlinkcreated', 'mod_groupselect');
     }
- 
+
     public function get_description() {
         return "The user with id '$this->userid' created a download link " .
         		"for the groupselect with the course module id '$this->contextinstanceid'";
     }
- 
+
     public function get_url() {
         return new \moodle_url('/mod/groupselect/view.php', array('id' => $this->contextinstanceid));
     }
-    
+
 }

@@ -100,7 +100,7 @@ function groupselect_get_password_protected_groups($groupselect) {
     $sql = "SELECT  groupid
             FROM    {groupselect_passwords} gp
             WHERE   gp.instance_id = ?";
-    
+
     $result = $DB->get_records_sql($sql, array($groupselect->id));
     $ids = array();
     foreach ($result as $r) {
@@ -120,6 +120,6 @@ function groupselect_get_context_members_by_role($context, $roleid) {
                   FROM   {role_assignments} r
                  WHERE  r.contextid = ?
               	   AND    r.roleid = ?";
-	
+
 	return $DB->get_records_sql($sql, array($context, $roleid));
 }

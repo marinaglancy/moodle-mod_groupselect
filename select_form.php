@@ -29,41 +29,41 @@ require_once ($CFG->dirroot . '/lib/formslib.php');
 require_once ($CFG->dirroot . '/lib/password_compat/lib/password.php');
 class select_form extends moodleform {
 	private $groupselect;
-	
+
 	// Define the form
 	function definition() {
 		global $OUTPUT;
 		$mform = $this->_form;
-		
+
 		list ( $data, $this->groupselect, $grpname ) = $this->_customdata;
-		
+
 //		if ($this->groupselect->password !== '') {
 //			$mform->addElement ( 'passwordunmask', 'password', get_string ( 'password', 'mod_groupselect' ), 'maxlength="254" size="24"' );
 //			$mform->setType ( 'password', PARAM_RAW );
-//		} 
+//		}
                 if ($data ['group_password']) {
 			$mform->addElement ( 'passwordunmask', 'password', get_string ( 'password', 'mod_groupselect' ), 'maxlength="254" size="24"' );
 			$mform->setType ( 'password', PARAM_RAW );
 		}
-		
+
 		$mform->addElement ( 'hidden', 'id' );
 		$mform->setType ( 'id', PARAM_INT );
-		
+
 		$mform->addElement ( 'hidden', 'select' );
 		$mform->setType ( 'select', PARAM_INT );
-		
+
 		$mform->addElement ( 'hidden', 'group_password' );
 		$mform->setType ( 'group_password', PARAM_BOOL );
-		
+
 		$this->add_action_buttons ( true, get_string ( 'select', 'mod_groupselect', $grpname ) );
-		
+
 		$this->set_data ( $data );
 	}
 	function validation($data, $files) {
 		global $OUTPUT;
-		
+
 		$errors = parent::validation ( $data, $files );
-		
+
 	//	if ($this->groupselect->password !== '') {
 	//		if ($this->groupselect->password !== $data ['password']) {
 	//			$errors ['password'] = get_string ( 'incorrectpassword', 'mod_groupselect' );
@@ -75,10 +75,10 @@ class select_form extends moodleform {
                                   FROM    {groupselect_passwords} g
                                  WHERE   g.groupid = ?";
 			$params = array (
-					'id' => $data ['select'] 
+					'id' => $data ['select']
 			);
 			$password = $DB->get_record_sql ( $sql, $params )->password;
-			
+
 			if (! password_verify ( $data ['password'], $password )) {
 				$errors ['password'] = get_string ( 'incorrectpassword', 'mod_groupselect' );
 			}

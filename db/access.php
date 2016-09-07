@@ -36,7 +36,7 @@ $capabilities = array(
                 ),
                 'clonepermissionsfrom' => 'moodle/course:manageactivities'
         ),
-        
+
         'mod/groupselect:create' => array(
                 'riskbitmask' => RISK_XSS,
                 'captype' => 'write',
@@ -45,7 +45,7 @@ $capabilities = array(
                         'student' => CAP_ALLOW
                 )
         ),
-        
+
         'mod/groupselect:select' => array(
                 'captype' => 'write',
                 'contextlevel' => CONTEXT_MODULE,
@@ -53,7 +53,7 @@ $capabilities = array(
                         'student' => CAP_ALLOW
                 )
         ),
-        
+
         'mod/groupselect:unselect' => array(
                 'captype' => 'write',
                 'contextlevel' => CONTEXT_MODULE,
@@ -61,7 +61,7 @@ $capabilities = array(
                         'student' => CAP_ALLOW
                 )
         ),
-        
+
         'mod/groupselect:export' => array(
                 'riskbitmask' => RISK_PERSONAL,
                     'captype' => 'read',

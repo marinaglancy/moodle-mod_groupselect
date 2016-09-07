@@ -28,19 +28,19 @@ defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot.'/lib/formslib.php');
 
 class create_form extends moodleform {
-    
+
     const DESCRIPTION_MAXLEN = 1024;
     const PASSWORD_MAXLEN = 254;
     const GROUP_NAME_MAXLEN = 254;
-    
-	function definition() {	    
-	    
+
+	function definition() {
+
 	    $mform = $this->_form;
 		list($data, $this->groupselect) = $this->_customdata;
-        
+
 		$mform->addElement('hidden','id');
 		$mform->setType('id', PARAM_INT);
-			
+
 		if($this->groupselect->studentcansetgroupname){
 			$mform->addElement('text','groupname', get_string('groupname', 'group'), array('size'=>'100', 'maxlength'=>self::GROUP_NAME_MAXLEN-1));
 		}
@@ -48,8 +48,8 @@ class create_form extends moodleform {
 			$mform->addElement('hidden', 'groupname', '');
 		}
 		$mform->setType('groupname', PARAM_TEXT);
-		
-		
+
+
 		if($this->groupselect->studentcansetdesc) {
 			$mform->addElement('textarea', 'description', get_string('description', 'mod_groupselect'), array('wrap'=>'virtual', 'maxlength'=>self::DESCRIPTION_MAXLEN-1, 'rows'=>'3', 'cols'=>'25', ''));
 		}
@@ -68,13 +68,13 @@ class create_form extends moodleform {
 
 		$this->add_action_buttons(true, get_string('creategroup', 'mod_groupselect'));
 		$this->set_data($data);
-		
-		
+
+
 	}
 
 	function validation($data, $files) {
 		global $COURSE;
-		
+
 		$errors = parent::validation($data, $files);
 
 		$description = $data['description'];
