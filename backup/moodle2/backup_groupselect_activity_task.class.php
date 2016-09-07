@@ -57,11 +57,11 @@ class backup_groupselect_activity_task extends backup_activity_task {
 
         // Link to the list of groupselects
         $search="/(".$base."\/mod\/groupselect\/index.php\?id\=)([0-9]+)/";
-        $content= preg_replace($search, '$@groupselectINDEX*$2@$', $content);
+        $content= preg_replace($search, '$@GROUPSELECTINDEX*$2@$', $content);
 
         // Link to groupselect view by moduleid
         $search="/(".$base."\/mod\/groupselect\/view.php\?id\=)([0-9]+)/";
-        $content= preg_replace($search, '$@groupselectVIEWBYID*$2@$', $content);
+        $content= preg_replace($search, '$@GROUPSELECTVIEWBYID*$2@$', $content);
 
         return $content;
     }

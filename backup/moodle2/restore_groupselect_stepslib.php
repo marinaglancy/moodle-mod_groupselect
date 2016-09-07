@@ -31,7 +31,14 @@ class restore_groupselect_activity_structure_step extends restore_activity_struc
     protected function define_structure() {
 
         $paths = array();
+        $userinfo = $this->get_setting_value('userinfo');
+
         $paths[] = new restore_path_element('groupselect', '/activity/groupselect');
+        $paths[] = new restore_path_element('password', '/activity/groupselect/passwords/password');
+
+        if ($userinfo) {
+            $paths[] = new restore_path_element('groups_teacher', '/activity/groupselect/groups_teachers/groups_teacher');
+        }
 
         // Return the paths wrapped into standard activity structure
         return $this->prepare_activity_structure($paths);
@@ -47,15 +54,50 @@ class restore_groupselect_activity_structure_step extends restore_activity_struc
             $data->targetgrouping = $this->get_mappingid('grouping', $data->targetgrouping);
         }
 
+        $data->timeavailable = $this->apply_date_offset($data->timeavailable);
+        $data->timedue = $this->apply_date_offset($data->timedue);
+        $data->timecreated = $this->apply_date_offset($data->timecreated);
+        $data->timemodified = $this->apply_date_offset($data->timemodified);
+
         // insert the groupselect record
         $newitemid = $DB->insert_record('groupselect', $data);
         // immediately after inserting "activity" record, call this
         $this->apply_activity_instance($newitemid);
     }
 
+    protected function process_password($data) {
+        global $DB;
+
+        $data = (object)$data;
+        $oldid = $data->id;
+        $data->instance_id = $this->get_new_parentid('groupselect');
+
+        $data->groupid = $this->get_mappingid('group', $data->groupid);
+
+        if ($data->groupid) {
+            $newitemid = $DB->insert_record('groupselect_passwords', $data);
+            $this->set_mapping('groupselect_password', $oldid, $newitemid);
+        }
+    }
+
+    protected function process_groups_teacher($data) {
+        global $DB;
+
+        $data = (object)$data;
+        $oldid = $data->id;
+        $data->instance_id = $this->get_new_parentid('groupselect');
+
+        $data->groupid = $this->get_mappingid('group', $data->groupid);
+        $data->teacherid = $this->get_mappingid('user', $data->teacherid);
+
+        if ($data->groupid && $data->teacherid) {
+            $newitemid = $DB->insert_record('groupselect_groups_teachers', $data);
+            $this->set_mapping('groups_teacher', $oldid, $newitemid);
+        }
+    }
+
     protected function after_execute() {
         // Add groupselect related files, no need to match by itemname (just internally handled context)
         $this->add_related_files('mod_groupselect', 'intro', null);
-        $this->add_related_files('mod_groupselect', 'content', null);
     }
 }

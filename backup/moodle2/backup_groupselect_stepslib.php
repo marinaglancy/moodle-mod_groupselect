@@ -37,22 +37,44 @@ class backup_groupselect_activity_structure_step extends backup_activity_structu
 
         // Define each element separated
         $groupselect = new backup_nested_element('groupselect', array('id'), array(
-            'name', 'intro', 'introformat', 'targetgrouping', 'contentformat',
-            'password', 'maxmembers', 'timeavailable', 'timedue',
-            'timecreated', 'timemodified'));
+            'name', 'intro', 'introformat', 'targetgrouping',
+            'maxmembers', 'timeavailable', 'timedue',
+            'timecreated', 'timemodified', 'hidefullgroups', 'deleteemptygroups',
+            'studentcancreate', 'minmembers', 'assignteachers', 'studentcansetdesc',
+            'showassignedteacher'));
+
+        $passwords = new backup_nested_element('passwords');
+
+        $password = new backup_nested_element('password', array('id'), array(
+            'groupid', 'password'));
+
+        $groupsteachers = new backup_nested_element('groups_teachers');
+
+        $groupsteacher = new backup_nested_element('groups_teacher', array('id'), array(
+            'groupid', 'teacherid'));
 
         // Build the tree
-        // (love this)
+        $groupselect->add_child($passwords);
+        $passwords->add_child($password);
+        $groupselect->add_child($groupsteachers);
+        $groupsteachers->add_child($groupsteacher);
 
         // Define sources
         $groupselect->set_source_table('groupselect', array('id' => backup::VAR_ACTIVITYID));
+        $password->set_source_table('groupselect_passwords', array('instance_id' => backup::VAR_PARENTID));
+        if ($userinfo) {
+            $groupsteacher->set_source_table('groupselect_groups_teachers',
+                    array('instance_id' => backup::VAR_ACTIVITYID));
+        }
 
         // Define id annotations
-        // (none)
+        $groupselect->annotate_ids('grouping', 'targetgrouping');
+        $password->annotate_ids('group', 'groupid');
+        $groupsteacher->annotate_ids('group', 'groupid');
+        $groupsteacher->annotate_ids('user', 'teacherid');
 
         // Define file annotations
         $groupselect->annotate_files('mod_groupselect', 'intro', null); // This file areas haven't itemid
-        $groupselect->annotate_files('mod_groupselect', 'content', null); // This file areas haven't itemid
 
         // Return the root element (groupselect), wrapped into standard activity structure
         return $this->prepare_activity_structure($groupselect);
