@@ -47,7 +47,12 @@ class mod_groupselect_mod_form extends moodleform_mod {
         }
         $mform->addRule('name', null, 'required', null, 'client');
 
-        $this->add_intro_editor($config->requiremodintro);
+        if ($CFG->version >= 2015051100) {
+            // Moodle 2.9 and later.
+            $this->standard_intro_elements();
+        } else {
+            $this->add_intro_editor($config->requiremodintro);
+        }
 
         //-------------------------------------------------------
 
