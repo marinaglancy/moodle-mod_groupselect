@@ -17,17 +17,17 @@
     color: red;
 }
 
-.mod_groupselect .edit, .text_to_html, td {
+.mod_groupselect .edit, .mod_groupselect .text_to_html, .mod_groupselect td {
   /*word-wrap:break-word !important;*/
   word-break: break-all !important;
 }
 
-table.sortable th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):not(.sorttable_nosort):after {
+.mod_groupselect table.sortable th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):not(.sorttable_nosort):after {
     content: " \25B4\25BE"
 }
 
 /*fix hyphens in table for narrow views*/
-.groupselect-table {
+.mod_groupselect .groupselect-table {
      -webkit-hyphens: auto;
     -moz-hyphens: auto;
     -ms-hyphens: auto;
@@ -35,7 +35,8 @@ table.sortable th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):not(.sor
 }
 
 /*fix width and wrap for groupselect table*/
-.groupselect-table .lastcol input[type="submit"], .groupselect-table .lastcol input[type="submit"]:first-child{
+.mod_groupselect .groupselect-table .lastcol input[type="submit"],
+.mod_groupselect .groupselect-table .lastcol input[type="submit"]:first-child{
     white-space: pre-wrap;
     -webkit-hyphens: auto;
     -moz-hyphens: auto;
@@ -46,22 +47,22 @@ table.sortable th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):not(.sor
 }
 
 
-.c3 span, .c3 a {
+.mod_groupselect .c3 span, .mod_groupselect .c3 a {
     white-space: nowrap;
 }
-td.cell.c3 {
+.mod_groupselect td.cell.c3 {
     min-width: 185px;
     max-width: 200px;
     width: auto;
 }
-.c3 a img {
+.mod_groupselect .c3 a img {
     margin-top: 4px;
 }
 
-tr div{
+.mod_groupselect tr div{
     word-break: normal;
 
 }
-th {
+.mod_groupselect th {
     white-space: nowrap;
 }
