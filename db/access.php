@@ -8,17 +8,17 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle. If not, see <http://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
  * Page module capability definition
  *
- * @package mod
- * @subpackage groupselect
+ * @package   mod_groupselect
+ * @copyright 2018 HTW Chur Roger Barras
  * @copyright 2011 Petr Skoda (http://skodak.org)
  * @copyright 2014 Tampere University of Technology, P. Pyykkönen (pirkka.pyykkonen ÄT tut.fi)
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -42,7 +42,9 @@ $capabilities = array(
                 'captype' => 'write',
                 'contextlevel' => CONTEXT_MODULE,
                 'archetypes' => array(
-                        'student' => CAP_ALLOW
+                        'student' => CAP_ALLOW,
+                        'editingteacher' => CAP_ALLOW,
+                        'manager' => CAP_ALLOW
                 )
         ),
 
@@ -50,7 +52,10 @@ $capabilities = array(
                 'captype' => 'write',
                 'contextlevel' => CONTEXT_MODULE,
                 'archetypes' => array(
-                        'student' => CAP_ALLOW
+                        'student' => CAP_ALLOW,
+                        'teacher' => CAP_ALLOW,
+                        'editingteacher' => CAP_ALLOW,
+                        'manager' => CAP_ALLOW
                 )
         ),
 
@@ -58,7 +63,10 @@ $capabilities = array(
                 'captype' => 'write',
                 'contextlevel' => CONTEXT_MODULE,
                 'archetypes' => array(
-                        'student' => CAP_ALLOW
+                        'student' => CAP_ALLOW,
+                        'teacher' => CAP_ALLOW,
+                        'editingteacher' => CAP_ALLOW,
+                        'manager' => CAP_ALLOW
                 )
         ),
 
@@ -67,16 +75,16 @@ $capabilities = array(
                     'captype' => 'read',
                 'contextlevel' => CONTEXT_MODULE,
                 'archetypes' => array(
-                		'manager' => CAP_ALLOW,
+                        'manager' => CAP_ALLOW,
                         'editingteacher' => CAP_ALLOW
                 )
         ),
         'mod/groupselect:assign' => array(
-        		'captype' => 'write',
-        		'contextlevel' => CONTEXT_MODULE,
-        		'archetypes' => array(
-        				'manager' => CAP_ALLOW,
-        				'editingteacher' => CAP_ALLOW
-        		)
+                'captype' => 'write',
+                'contextlevel' => CONTEXT_MODULE,
+                'archetypes' => array(
+                        'manager' => CAP_ALLOW,
+                        'editingteacher' => CAP_ALLOW
+                )
         ),
 );

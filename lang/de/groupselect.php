@@ -1,11 +1,31 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-$string['eventgroupteacheradded'] = 'Trainer ohne Bearbeitungsrecht zugeordnet';
-$string['eventexportlinkcreated'] = 'Exportlink erstellt';
-$string['modulename_help'] = '<p>Teilnehmer/innen können Gruppen erstellen und wählen: </p><ul><li>Teilnehmer/innen können Gruppen erstellen, diesen eine Beschreibung geben und, falls gewünscht, mit einem Passwort schützen</li><li>Teilnehmer/innen können Gruppen auswählen und betreten</li><li>Trainer/innen ohne Bearbeitungsrechte können Gruppen hinzugefügt werden</li><li>Trainer/in kann die Gruppenliste des Kurses als CSV-Datei exportieren</li><li>Volle Kompatibilität zu Basis Moodle-Gruppen: Gruppen können auch durch andere Plugins erzeugt werden.</li></ul>';
-$string['notifyexpiredselection'] = 'Zeige Meldung, wenn das Einschreibeende vorüber ist';
-$string['notifyexpiredselection_help'] = 'Wenn gesetzt, wird eine Meldung angezeigt falls das Einschreibeende vorüber ist';
-$string['studentcansetenrolmentkey'] = 'Teilnehmende können Passwörter setzen um Gruppen beizutreten';
-$string['studentcansetenrolmentkey_help'] = 'Wenn gesetzt, kann ein/e Teilnehmer/in ein Gruppenpasswort setzen';
-$string['studentcansetgroupname'] = 'Teilnehmende dürfen Gruppennamen selbst bestimmen.';
-$string['studentcansetgroupname_help'] = 'Wenn gesetzt, kann ein/e Teilnehmer/in einen Gruppennamen setzen';
+/**
+ * Group self selection
+ *
+ * @package   mod_groupselect
+ * @copyright 2018 HTW Chur Roger Barras
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+defined('MOODLE_INTERNAL') || die;
+
+$string['privacy:metadata'] = 'Das Plugin Freie Gruppeneinteilung speichert keine persönlichen Daten.';
+$string['hidegroupmembers'] = 'Verberge Gruppenmitglieder für Teilnehmende';
+$string['hidegroupmembers_help'] = 'Wenn gesetzt, werden Gruppenmitglieder für Teilnehmende verborgen. Falls Teilnehmende die Berechtigung besitzen Gruppen zu verwalten (moodle/course:managegroups) oder auf alle Gruppen zugreifen können (moodle/site:accessallgroups), werden die Gruppenmitgleider immer angezeigt.';
+$string['hidesuspendedstudents'] = 'Verberge inaktive Teilnehmende';
+$string['hidesuspendedstudents_help'] = 'Wenn gesetzt, werden inaktive Teilnehmende aus der Ansicht verborgen und bei der Anzahl Gruppenteilnehmer nicht berücksichtig.';

@@ -15,22 +15,25 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Group self selection
+ * Add event handlers for the groupselect
  *
  * @package    mod_groupselect
- * @copyright  2020 Roger Barras
+ * @category   event
  * @copyright  2018 HTW Chur Roger Barras
- * @copyright  2008-2011 Petr Skoda (http://skodak.org)
- * @copyright  2014 Tampere University of Technology, P. Pyykkönen (pirkka.pyykkonen ÄT tut.fi)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die;
 
-$plugins = array(
-        'groupselect-jeditable' => array(
-            'files' => array(
-                'jeditable/jquery.jeditable.js',
-            ),
-         ),
-    );
+defined('MOODLE_INTERNAL') || die();
+
+$observers = array(
+
+    array(
+        'eventname' => '\core\event\user_enrolment_deleted',
+        'callback' => '\mod_groupselect\groupselect_observer::user_unenrolled',
+    ),
+    array(
+        'eventname' => '\core\event\group_deleted',
+        'callback' => '\mod_groupselect\groupselect_observer::group_deleted',
+    )
+);

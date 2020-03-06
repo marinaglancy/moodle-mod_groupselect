@@ -15,22 +15,32 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Group self selection
+ * Privacy Subsystem implementation for mod_groupselect.
  *
  * @package    mod_groupselect
- * @copyright  2020 Roger Barras
  * @copyright  2018 HTW Chur Roger Barras
- * @copyright  2008-2011 Petr Skoda (http://skodak.org)
- * @copyright  2014 Tampere University of Technology, P. Pyykkönen (pirkka.pyykkonen ÄT tut.fi)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die;
+namespace mod_groupselect\privacy;
 
-$plugins = array(
-        'groupselect-jeditable' => array(
-            'files' => array(
-                'jeditable/jquery.jeditable.js',
-            ),
-         ),
-    );
+defined('MOODLE_INTERNAL') || die();
+
+/**
+ * The mod_groupselect module does not store any data.
+ *
+ * @copyright  2018 HTW Chur Roger Barras
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+class provider implements \core_privacy\local\metadata\null_provider {
+
+    /**
+     * Get the language string identifier with the component's language
+     * file to explain why this plugin stores no data.
+     *
+     * @return  string
+     */
+    public static function get_reason() : string {
+        return 'privacy:metadata';
+    }
+}

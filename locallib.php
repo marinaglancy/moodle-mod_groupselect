@@ -17,8 +17,8 @@
 /**
  * Library of functions and constants of Group selection module
  *
- * @package    mod
- * @subpackage groupselect
+ * @package    mod_groupselect
+ * @copyright  2018 HTW Chur Roger Barras
  * @copyright  2008-2011 Petr Skoda (http://skodak.org)
  * @copyright  2014 Tampere University of Technology, P. Pyykkönen (pirkka.pyykkonen ÄT tut.fi)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -26,10 +26,18 @@
 
 defined('MOODLE_INTERNAL') || die;
 
+// Event types.
+define('GROUPSELECT_EVENT_TYPE_DUE', 'due');
+
 require_once("$CFG->dirroot/group/lib.php");
-//require_once("$CFG->dirroot/group/externallib.php");
 require_once("$CFG->dirroot/mod/groupselect/lib.php");
 
+/**
+ * Get the group description as text
+ *
+ * @param stdClass $group groups record
+ * @return string group description as plain text
+ */
 function groupselect_get_group_info($group) {
     $group = clone($group);
     $context = context_course::instance($group->courseid);
@@ -40,13 +48,13 @@ function groupselect_get_group_info($group) {
     }
     $options = new stdClass;
     $options->overflowdiv = true;
-    return format_text($group->description, $group->descriptionformat, array('filter'=>false, 'overflowdiv'=>true, 'context'=>$context));
+    return format_text($group->description, $group->descriptionformat, array('filter' => false, 'overflowdiv' => true, 'context' => $context));
 }
 
 /**
  * Is the given group selection open for students to select their group at the moment?
  *
- * @param object $groupselect groupselect record
+ * @param stdClass $groupselect groupselect record
  * @return bool True if the group selection is open right now, false otherwise
  */
 function groupselect_is_open($groupselect) {
@@ -58,23 +66,40 @@ function groupselect_is_open($groupselect) {
 /**
  * Get the number of members in all groups the user can select from in this activity
  *
- * @param $cm Course module slot of the groupselect instance
- * @param $targetgrouping The id of grouping the user can select a group from
+ * @param mixed $cm Course module slot of the groupselect instance
+ * @param int $targetgrouping The id of grouping the user can select a group from
+ * @param bool $hidesuspended Whether to exclude suspended students
  * @return array of objects: [id] => object(->usercount ->id) where id is group id
  */
-function groupselect_group_member_counts($cm, $targetgrouping=0) {
+function groupselect_group_member_counts($cm, $targetgrouping=0, $hidesuspended = false) {
     global $DB;
 
-    //TODO: join into enrolment table
+    // Join to the enrolment and user table to hide suspended students.
+    $andnotsuspended = '';
+    $enrolsql = " AND gm.userid in (
+                    SELECT ue.userid
+                      FROM {user_enrolments} ue
+                      JOIN {enrol} e ON ue.enrolid = e.id
+                     WHERE e.courseid = g.courseid";
+    if ($hidesuspended) {
+        $enrolsql .= " AND ue.status = " . ENROL_USER_ACTIVE;
+        $andnotsuspended = " AND gm.userid in (
+            SELECT u.id
+              FROM {user} u
+             WHERE u.suspended = 0) ";
+    }
+    $enrolsql .= ")";
 
     if (empty($targetgrouping)) {
-        //all groups
+        // All groups.
         $sql = "SELECT g.id, COUNT(gm.userid) AS usercount
                   FROM {groups_members} gm
                        JOIN {groups} g ON g.id = gm.groupid
                  WHERE g.courseid = :course
+                       $enrolsql
+                       $andnotsuspended
               GROUP BY g.id";
-        $params = array('course'=>$cm->course);
+        $params = array('course' => $cm->course);
 
     } else {
         $sql = "SELECT g.id, COUNT(gm.userid) AS usercount
@@ -83,8 +108,10 @@ function groupselect_group_member_counts($cm, $targetgrouping=0) {
                        JOIN {groupings_groups} gg ON gg.groupid = g.id
                  WHERE g.courseid = :course
                        AND gg.groupingid = :grouping
+                       $enrolsql
+                       $andnotsuspended
               GROUP BY g.id";
-        $params = array('course'=>$cm->course, 'grouping'=>$targetgrouping);
+        $params = array('course' => $cm->course, 'grouping' => $targetgrouping);
     }
 
     return $DB->get_records_sql($sql, $params);
@@ -93,6 +120,7 @@ function groupselect_group_member_counts($cm, $targetgrouping=0) {
 /**
  * Get password protected groups
  *
+ * @param stdClass $groupselect groupselect record
  * @return array of group ids
  */
 function groupselect_get_password_protected_groups($groupselect) {
@@ -112,14 +140,16 @@ function groupselect_get_password_protected_groups($groupselect) {
 /**
  * Get users with given role in given context
  *
+ * @param context $context context
+ * @param int $roleid role id
  * @return array of user ids
  */
 function groupselect_get_context_members_by_role($context, $roleid) {
-	global $DB;
-	$sql = "SELECT r.userid
+    global $DB;
+    $sql = "SELECT r.userid
                   FROM   {role_assignments} r
                  WHERE  r.contextid = ?
-              	   AND    r.roleid = ?";
+                   AND    r.roleid = ?";
 
-	return $DB->get_records_sql($sql, array($context, $roleid));
+    return $DB->get_records_sql($sql, array($context, $roleid));
 }

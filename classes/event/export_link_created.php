@@ -17,36 +17,48 @@
 /**
  * The export_link_created event.
  *
- * @package    mod
- * @subpackage groupselect
+ * @package    mod_groupselect
  * @copyright  2016 HTW Chur Roger Barras
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 namespace mod_groupselect\event;
 defined('MOODLE_INTERNAL') || die();
+
 /**
  * The export_link_created event class.
- *
  *
  * @since     Moodle 2.9
  * @copyright 2016 HTW Chur Roger Barras
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  **/
 class export_link_created extends \core\event\base {
+
+    /**
+     * Initialisation
+     */
     protected function init() {
         $this->data['crud'] = 'c'; // c(reate), r(ead), u(pdate), d(elete)
         $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
     }
 
+    /**
+     * Gets the name
+     */
     public static function get_name() {
         return get_string('eventexportlinkcreated', 'mod_groupselect');
     }
 
+    /**
+     * Gets the description
+     */
     public function get_description() {
         return "The user with id '$this->userid' created a download link " .
-        		"for the groupselect with the course module id '$this->contextinstanceid'";
+                "for the groupselect with the course module id '$this->contextinstanceid'";
     }
 
+    /**
+     * Gets the URL
+     */
     public function get_url() {
         return new \moodle_url('/mod/groupselect/view.php', array('id' => $this->contextinstanceid));
     }
